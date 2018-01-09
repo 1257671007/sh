@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			a{
+				color: black;
+				display: block;
+				background-color: #89e2ff;
+				cursor: pointer;;
+			}
+			li{
+				list-style: none;
+				font-size: 28px;;
+			}
+			p{
+				color: #767676;;
+
+				font-size: 38px;;
+			}
+			h4{
+
+				padding-bottom: 15px;
+				margin-bottom: 15px;;
+				margin-top: 5px;;
+			}
+
+			#textname{
+				margin-top: 70px;;
+			}
+			button{
+				float: right;;
+				margin-top: -80px;;
+			}
+			#btn{
+				margin-left: 20px;;
+				float:right;
+				margin-top: 66px;
+				margin-right: 140px;
+			}
+
+		</style>
+	</head>
+	
+	<body>
+
+		<div style="margin: 0 auto; width: 700px; height: 150px;">
+			<input type="text" id="textname" placeholder="textname"/>
+			<input type="text" id="names" placeholder="name"/>
+			<input type="text" id="texts" placeholder="text"/>
+
+			<button id="btn">发布</button>
+		</div>
+
+		<ul id="ul">
+
+
+		</ul>
+		
+		
+		<script>
+	fof()
+	function fof(){
+		ajax1({
+			type:"get",
+			url:"http://localhost:8000/get",
+			success:function(da){
+				var arr = eval('('+da+')')
+var str = ''
+				for(var i=0;i<arr.length;i++){
+					str+=`<a>
+					<li>发布人：${arr[i].name}</li>
+					<p>title:${arr[i].textname}</p>
+					<h4>内容：${arr[i].text}</h4>
+
+					</a>
+					    `
+				}
+				ul.innerHTML = str
+			},
+			error:function(da){
+				console.log(da)
+			}
+		  })
+	}
+		
+		
+		btn.onclick = function(){
+			ajax1({
+			type:"get",
+			url:"http://localhost:8000/lu",
+			data:{
+				text:texts.value,
+				name:names.value,
+				textname:textname.value
+			},
+			success:function(da){
+				console.log(da)
+                fof()
+			},
+			error:function(da){
+				console.log(da)
+			}
+		  })
+		}
+
+
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		 function ajax1(text){
+        	
+        	var xhr = new XMLHttpRequest()
+        	if(text.type == "get"){
+    //这里是get
+        xhr.open('get',text.url+'?'+strUrl(text.data),true)
+        xhr.send()
+        	}else{
+        		//这里是post
+        		xhr.open('post',text.url,true)
+		xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
+                xhr.send(strUrl(text.data))
+        	}
+        	xhr.onreadystatechange = function(){
+        		if(xhr.readyState == 4){
+        			if(xhr.status>=200&&xhr.status<300 || xhr.status==304){
+        			  text.success(xhr.responseText)
+        			}else{
+        				text.error(xhr.status)
+        			}
+        		}
+        	}
+        	
+        	function strUrl(json){
+			var arr = []
+		    for(i in json){
+			arr.push(i+'='+json[i])
+		    }
+		    var str = arr.join('&')
+		    return str
+		   
+		    }
+        }	
+		
+		
+	</script>
+	</body>
+</html>
